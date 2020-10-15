@@ -2,14 +2,22 @@
 #include<stdlib.h>
 #define UKUPNO_BODOVA 200
 
-typedef struct Student {
+struct Student {
     char first_name[50];
     char last_name[50];
     int score; 
-} Student; 
+}; 
 
+typedef struct Student Student;
 
-int get_lines_count(FILE *file) {
+int get_lines_count() {
+	FILE *file = fopen("studenti.txt", "r");
+
+    if(file == NULL) {
+        printf("Could not open file !");
+        return 0;
+    }
+
     char char_buffer;
     int line_counter = 0;
     while(!feof(file)) {
@@ -24,7 +32,14 @@ int get_lines_count(FILE *file) {
 }
 
 
-void read_students(FILE *file, int size, Student *students) {
+int read_students(int size, Student *students) {
+	FILE *file = fopen("studenti.txt", "r");
+
+    if(file == NULL) {
+        printf("Could not open file !");
+        return 0;
+    }
+
     int i;
 
     for(i=0; i<size; i++) {
@@ -36,25 +51,22 @@ void read_students(FILE *file, int size, Student *students) {
                 &students[i].score
         );
     }
+
+	fclose(file);
+
+	return 0;
 }
 
 
 int main() {
-    FILE *students_file;
     Student *students;
     int line_number;
     int i;
 
-    students_file = fopen("studenti.txt", "r");
 
-    if(students_file == NULL) {
-        printf("Could not open file !");
-        return 0;
-    }
-
-    line_number = get_lines_count(students_file);
+    line_number = get_lines_count();
     students = (Student *)malloc(sizeof(Student) * line_number);
-    read_students(students_file, line_number, students);
+    read_students(line_number, students);
 
 
     float relative_score;
@@ -70,8 +82,6 @@ int main() {
                 students[i].score
         );
     }
-
-    fclose(students_file);
 
     return 0;
 }

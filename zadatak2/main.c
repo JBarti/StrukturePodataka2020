@@ -51,5 +51,7 @@ int main() {
     printf("\n");
     insert_before(list_root, p2, p5);
     print_list(list_root->next);
+
+    sort(list_root, 1);
     
 }

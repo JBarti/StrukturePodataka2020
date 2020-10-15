@@ -13,7 +13,7 @@ Node *create_node(Person *person) {
 }
 
 
-Person *create_person(char first_name[], char last_name[], int year_of_birth) {
+Person *create_person(char first_name[], char last_name[], unsigned int year_of_birth) {
 	Person *new_person = (Person *)malloc(sizeof(Person));
 
 	new_person->first_name = strdup(first_name);
@@ -123,4 +123,17 @@ void insert_after(Node *root, Person *person, Person *new_person) {
         last_node = node_temp;
         node_temp = node_temp->next;
     }
+}
+
+void sort(Node *root, unsigned int direction) {
+	Node *node_temp = root->next;
+
+	while(node_temp->next != NULL) {
+		node_temp = node_temp->next;
+		if(strcmp(node_temp->val->last_name, node_temp->next->val->last_name) > 0) {
+				printf("SWAP");
+
+		}
+		
+	}
 }

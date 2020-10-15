@@ -1,7 +1,7 @@
 typedef struct {
 	char *first_name;
 	char *last_name;
-	int year_of_birth;
+	unsigned int year_of_birth;
 } Person;
 
 typedef struct Node {
@@ -9,6 +9,9 @@ typedef struct Node {
 	struct Node *next;
 
 } Node;
+
+unsigned int SORT_DOWNWARD = 1;
+unsigned int SORT_FORWARD = 0;
 
 
 Node *create_node(Person *person);
@@ -30,4 +33,6 @@ Node *find_node_by_person(Node *root, Person *person);
 Person *find_by_last_name(Node *root, char last_name[]);
 
 void delete_person(Node *root, Person *person_del);
+
+void sort(Node *root, int direction);
 
