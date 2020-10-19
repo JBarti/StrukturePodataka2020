@@ -22,24 +22,28 @@ int main() {
 
 	list_root = (Node *)malloc(sizeof(Node));
 
-    Person *p1 = create_person("Mirko", "Mirkic", 2010);
-    Person *p2 = create_person("Matko", "Matkic", 2010);
-    Person *p3 = create_person("Stipko", "Stipkic", 2010);
-    Person *p4 = create_person("Jozo", "Jozic", 2010);
-    Person *p5 = create_person("Jozo", "Jozic", 2010);
+    Person *p1 = create_person("Ante", "Ante", 2010);
+    Person *p2 = create_person("Bartul", "Bartul", 2010);
+    Person *p3 = create_person("Josip", "Josip", 2010);
+    Person *p4 = create_person("Matej", "Matej", 2010);
+    Person *p5 = create_person("Stipe", "Stipe", 2010);
 
-	prepend(list_root, p1);
-	prepend(list_root, p2);
+	append(list_root, p1);
+	append(list_root, p2);
+	append(list_root, p1);
 	append(list_root, p3);
+	append(list_root, p1);
 	print_list(list_root->next);
 
-    Person *person_searched = find_by_last_name(list_root->next, "Mirkic");
-    printf(
-            "\n%s %s %d\n", 
-            person_searched->first_name, 
-            person_searched->last_name, 
-            person_searched->year_of_birth
-    );
+    Person *person_searched = find_by_last_name(list_root->next, "Josip");
+	if(person_searched != NULL) {
+		printf(
+				"\n%s %s %d\n", 
+				person_searched->first_name, 
+				person_searched->last_name, 
+				person_searched->year_of_birth
+		);
+	}
     printf("\n");
     delete_person(list_root, person_searched);
     print_list(list_root->next);
@@ -52,6 +56,8 @@ int main() {
     insert_before(list_root, p2, p5);
     print_list(list_root->next);
 
-    sort(list_root, 1);
+	printf("\n");
+    sort(list_root);
+	print_list(list_root->next);
     
 }

@@ -37,7 +37,7 @@ int read_students(int size, Student *students) {
 
     if(file == NULL) {
         printf("Could not open file !");
-        return 0;
+        return 1;
     }
 
     int i;

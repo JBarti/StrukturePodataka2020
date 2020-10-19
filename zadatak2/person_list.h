@@ -10,29 +10,26 @@ typedef struct Node {
 
 } Node;
 
-unsigned int SORT_DOWNWARD = 1;
-unsigned int SORT_FORWARD = 0;
-
 
 Node *create_node(Person *person);
 
-Person *create_person(char first_name[], char last_name[], int year_of_birth);
+Person *create_person(char first_name[], char last_name[], unsigned int year_of_birth);
 
-void prepend(Node *root, Person *person);
+Node *prepend(Node *element, Person *person);
 
-void append(Node *root, Person *person);
+Node *append(Node *element, Person *person);
 
-void insert_before(Node *root, Person *person, Person *new_person);
+int insert_before(Node *root, Person *person, Person *new_person);
 
-void insert_after(Node *root, Person *person, Person *new_person);
+int insert_after(Node *root, Person *person, Person *new_person);
 
-void print_list(Node *root);
+int print_list(Node *root);
 
 Node *find_node_by_person(Node *root, Person *person);
 
 Person *find_by_last_name(Node *root, char last_name[]);
 
-void delete_person(Node *root, Person *person_del);
+int delete_person(Node *root, Person *person_del);
 
-void sort(Node *root, int direction);
+int sort(Node *root);
 
