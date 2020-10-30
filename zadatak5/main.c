@@ -3,31 +3,30 @@
 #define foreach(p, q) for(p=q->next; p!=NULL; p=p->next)
 
 struct _node;
-typedef struct _node* Position;
 typedef struct _node Node;
 
 struct _node {
 	int val;
-	Position next;
+	Node* next;
 };
 
 
 int count_lines(char filename[]) {
-    FILE *file = fopen(filename, "r");
-    char char_temp;
-    int counter = 0;
+	FILE *file = fopen(filename, "r");
+	char char_temp;
+	int counter = 0;
 
-    while(!feof(file)) {
-        char_temp = fgetc(file); 
+	while(!feof(file)) {
+		char_temp = fgetc(file); 
 
-        if(char_temp == '\n') {
-            counter += 1;
-        }
-    }
+		if(char_temp == '\n') {
+			counter += 1;
+		}
+	}
 
-    fclose(file);
+	fclose(file);
 
-    return counter;
+	return counter;
 }
 
 
@@ -41,7 +40,7 @@ Node *create_node(int val) {
 
 	node->val = val;
 	node->next = NULL;
-	
+
 	return node;
 }
 
@@ -81,6 +80,56 @@ int print_list(Node *head) {
 	foreach(node_temp, head) {
 		printf("%d\n", node_temp->val);
 	}
+
+	return 0;
+}
+
+
+Node *copy_list(Node *head) {
+	Node *head_new = create_node(0);
+	Node *node_temp;
+	Node *new_temp = head_new;
+
+	foreach(node_temp, head) {
+		new_temp->next = create_node(node_temp->val);
+		new_temp = new_temp->next;
+	}
+
+	return head_new;
+}
+
+
+Node* unions(Node *head1, Node *head2) {
+	Node *head_union = copy_list(head1);
+	Node *node_before = head_union;
+	Node *node_temp2, *node_temp1;
+	int inserted = 0;
+
+	foreach(node_temp2, head2) {
+		inserted = 0;
+		foreach(node_temp1, head_union) {
+			if(node_temp1->val == node_temp2->val) {
+				inserted = 1;
+				break;
+			};
+
+			if(node_temp1->val > node_temp2->val) {
+				Node *new_node = create_node(node_temp2->val);
+				node_before->next = new_node;
+				new_node->next = node_temp1;
+				inserted = 1;
+				break;
+			}
+			node_before = node_temp1;
+		}
+
+		if(!inserted) {
+			Node *new_node = create_node(node_temp2->val);
+			node_before->next = new_node;
+		}
+	}
+
+	return head_union;
 }
 
 
@@ -94,8 +143,9 @@ int main() {
 	print_list(list1);
 	printf("\n");
 	print_list(list2);
+	printf("\n");
 
+	Node *union_list = unions(list1, list2);
 
 	return EXIT_SUCCESS;
 }
-
