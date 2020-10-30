@@ -133,6 +133,25 @@ Node* unions(Node *head1, Node *head2) {
 }
 
 
+Node *intersect(Node *head1, Node *head2) {
+	Node *node_temp1, *node_temp2;
+	Node *head_inter = create_node(0);
+	Node *inter_temp = head_inter;
+	
+	foreach(node_temp1, head1) {
+		foreach(node_temp2, head2) {
+			if(node_temp1->val == node_temp2->val) {
+				inter_temp->next = create_node(node_temp1->val);
+				inter_temp = inter_temp->next;
+				break;
+			}
+		}
+	}
+
+	return head_inter;
+}
+
+
 int main() {
 	int lines1 = count_lines("brojevi1.txt");
 	int lines2 = count_lines("brojevi2.txt");
@@ -146,6 +165,10 @@ int main() {
 	printf("\n");
 
 	Node *union_list = unions(list1, list2);
+	Node *intersect_list = intersect(list1, list2);
+	print_list(union_list);
+	printf("\n");
+	print_list(intersect_list);
 
 	return EXIT_SUCCESS;
 }
