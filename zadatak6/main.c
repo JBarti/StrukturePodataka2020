@@ -51,7 +51,7 @@ Node *push_to_stack(Node *head) {
 }
 
 
-Node *pop_from_stack(Node *head) {
+Node *pop_from_queue(Node *head) {
 	if(head->next == NULL) {
 		printf("No elements to pop");
 		return NULL;
@@ -68,24 +68,34 @@ Node *push_to_queue(Node *head) {
 }
 
 
-Node *pop_from_queue(Node *head) {
+Node *find_penultimate(Node *head) {
 	Node *node_temp;
 	Node *node_last = head;
 
-	if(head->next == NULL) {
-		printf("No elements to pop");
-		return NULL;
-	}
-
 	foreach(node_temp, head) {
 		if(node_temp->next == NULL) {
-			node_last->next = NULL;
-			return node_temp;
+			return node_last;
 		} 
 		node_last = node_temp;
 	}
 
 	return NULL;
+}
+
+Node *pop_from_stack(Node *head) {
+	if(head->next == NULL) {
+		printf("No elements to pop");
+		return NULL;
+	}
+
+	Node *penultimate = find_penultimate(head);
+
+	if(penultimate == NULL) return NULL;
+
+	Node *node_temp = penultimate->next;
+	penultimate->next = NULL;
+
+	return node_temp;
 }
 
 
