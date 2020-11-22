@@ -1,12 +1,12 @@
 typedef struct {
-	char *first_name;
-	char *last_name;
-	unsigned int year_of_birth;
+    char *first_name;
+    char *last_name;
+    unsigned int year_of_birth;
 } Person;
 
 typedef struct Node {
-	Person *val;
-	struct Node *next;
+    Person *val;
+    struct Node *next;
 
 } Node;
 
