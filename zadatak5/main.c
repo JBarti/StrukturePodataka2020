@@ -6,169 +6,169 @@ struct _node;
 typedef struct _node Node;
 
 struct _node {
-	int val;
-	Node* next;
+    int val;
+    Node* next;
 };
 
 
 int count_lines(char filename[]) {
-	FILE *file = fopen(filename, "r");
-	char char_temp;
-	int counter = 0;
+    FILE *file = fopen(filename, "r");
+    char char_temp;
+    int counter = 0;
 
-	while(!feof(file)) {
-		char_temp = fgetc(file); 
+    while(!feof(file)) {
+        char_temp = fgetc(file); 
 
-		if(char_temp == '\n') {
-			counter += 1;
-		}
-	}
+        if(char_temp == '\n') {
+            counter += 1;
+        }
+    }
 
-	fclose(file);
+    fclose(file);
 
-	return counter;
+    return counter;
 }
 
 
 Node *create_node(int val) {
-	Node *node = (Node *)malloc(sizeof(Node));
+    Node *node = (Node *)malloc(sizeof(Node));
 
-	if(node == NULL) {
-		printf("Memory allocation failed");
-		return NULL;
-	}
+    if(node == NULL) {
+        printf("Memory allocation failed");
+        return NULL;
+    }
 
-	node->val = val;
-	node->next = NULL;
+    node->val = val;
+    node->next = NULL;
 
-	return node;
+    return node;
 }
 
 
 Node *read_nums(char filename[], int lines) {
-	FILE *file = fopen(filename, "r");
+    FILE *file = fopen(filename, "r");
 
-	if(file == NULL) {
-		printf("Unable to open file");
-		return NULL;
-	}
+    if(file == NULL) {
+        printf("Unable to open file");
+        return NULL;
+    }
 
-	Node *head = (Node *)malloc(sizeof(Node));
-	head->next = NULL;
+    Node *head = (Node *)malloc(sizeof(Node));
+    head->next = NULL;
 
-	if(head == NULL) {
-		printf("Memory allocation failed");
-		return NULL;
-	}
+    if(head == NULL) {
+        printf("Memory allocation failed");
+        return NULL;
+    }
 
-	Node *node_temp = head;
+    Node *node_temp = head;
 
-	for(int i=0; i<lines; i++) {
-		int temp;
-		fscanf(file, "%d",  &temp);
-		node_temp->next = create_node(temp);
-		node_temp = node_temp->next;
-	}
+    for(int i=0; i<lines; i++) {
+        int temp;
+        fscanf(file, "%d",  &temp);
+        node_temp->next = create_node(temp);
+        node_temp = node_temp->next;
+    }
 
-	return head;
+    return head;
 }
 
 
 int print_list(Node *head) {
-	Node *node_temp;
+    Node *node_temp;
 
-	foreach(node_temp, head) {
-		printf("%d\n", node_temp->val);
-	}
+    foreach(node_temp, head) {
+        printf("%d\n", node_temp->val);
+    }
 
-	return 0;
+    return 0;
 }
 
 
 Node *copy_list(Node *head) {
-	Node *head_new = create_node(0);
-	Node *node_temp;
-	Node *new_temp = head_new;
+    Node *head_new = create_node(0);
+    Node *node_temp;
+    Node *new_temp = head_new;
 
-	foreach(node_temp, head) {
-		new_temp->next = create_node(node_temp->val);
-		new_temp = new_temp->next;
-	}
+    foreach(node_temp, head) {
+        new_temp->next = create_node(node_temp->val);
+        new_temp = new_temp->next;
+    }
 
-	return head_new;
+    return head_new;
 }
 
 
 Node* unions(Node *head1, Node *head2) {
-	Node *head_union = copy_list(head1);
-	Node *node_before = head_union;
-	Node *node_temp2, *node_temp1;
-	int inserted = 0;
+    Node *head_union = copy_list(head1);
+    Node *node_before = head_union;
+    Node *node_temp2, *node_temp1;
+    int inserted = 0;
 
-	foreach(node_temp2, head2) {
-		inserted = 0;
-		foreach(node_temp1, head_union) {
-			if(node_temp1->val == node_temp2->val) {
-				inserted = 1;
-				break;
-			};
+    foreach(node_temp2, head2) {
+        inserted = 0;
+        foreach(node_temp1, head_union) {
+            if(node_temp1->val == node_temp2->val) {
+                inserted = 1;
+                break;
+            };
 
-			if(node_temp1->val > node_temp2->val) {
-				Node *new_node = create_node(node_temp2->val);
-				node_before->next = new_node;
-				new_node->next = node_temp1;
-				inserted = 1;
-				break;
-			}
-			node_before = node_temp1;
-		}
+            if(node_temp1->val > node_temp2->val) {
+                Node *new_node = create_node(node_temp2->val);
+                node_before->next = new_node;
+                new_node->next = node_temp1;
+                inserted = 1;
+                break;
+            }
+            node_before = node_temp1;
+        }
 
-		if(!inserted) {
-			Node *new_node = create_node(node_temp2->val);
-			node_before->next = new_node;
-		}
-	}
+        if(!inserted) {
+            Node *new_node = create_node(node_temp2->val);
+            node_before->next = new_node;
+        }
+    }
 
-	return head_union;
+    return head_union;
 }
 
 
 Node *intersect(Node *head1, Node *head2) {
-	Node *node_temp1, *node_temp2;
-	Node *head_inter = create_node(0);
-	Node *inter_temp = head_inter;
-	
-	foreach(node_temp1, head1) {
-		foreach(node_temp2, head2) {
-			if(node_temp1->val == node_temp2->val) {
-				inter_temp->next = create_node(node_temp1->val);
-				inter_temp = inter_temp->next;
-				break;
-			}
-		}
-	}
+    Node *node_temp1, *node_temp2;
+    Node *head_inter = create_node(0);
+    Node *inter_temp = head_inter;
 
-	return head_inter;
+    foreach(node_temp1, head1) {
+        foreach(node_temp2, head2) {
+            if(node_temp1->val == node_temp2->val) {
+                inter_temp->next = create_node(node_temp1->val);
+                inter_temp = inter_temp->next;
+                break;
+            }
+        }
+    }
+
+    return head_inter;
 }
 
 
 int main() {
-	int lines1 = count_lines("brojevi1.txt");
-	int lines2 = count_lines("brojevi2.txt");
+    int lines1 = count_lines("brojevi1.txt");
+    int lines2 = count_lines("brojevi2.txt");
 
-	Node *list1 = read_nums("brojevi1.txt", lines1);
-	Node *list2 = read_nums("brojevi2.txt", lines2);
+    Node *list1 = read_nums("brojevi1.txt", lines1);
+    Node *list2 = read_nums("brojevi2.txt", lines2);
 
-	print_list(list1);
-	printf("\n");
-	print_list(list2);
-	printf("\n");
+    print_list(list1);
+    printf("\n");
+    print_list(list2);
+    printf("\n");
 
-	Node *union_list = unions(list1, list2);
-	Node *intersect_list = intersect(list1, list2);
-	print_list(union_list);
-	printf("\n");
-	print_list(intersect_list);
+    Node *union_list = unions(list1, list2);
+    Node *intersect_list = intersect(list1, list2);
+    print_list(union_list);
+    printf("\n");
+    print_list(intersect_list);
 
-	return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }

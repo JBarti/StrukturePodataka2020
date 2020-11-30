@@ -7,13 +7,32 @@
 #define MIN_RAND 10
 #define MAX_RAND 100
 
-typedef struct _node_double Node;
+typedef struct _node Node;
+typedef struct _node_double NodeDouble;
 
-struct _node_double {
+struct _node {
     double val;
     Node *next;
 };
 
+
+int count_lines(char filename[]) {
+    FILE *file = fopen(filename, "r");
+    char char_temp;
+    int counter = 0;
+
+    while(!feof(file)) {
+        char_temp = fgetc(file); 
+
+        if(char_temp == '\n') {
+            counter += 1;
+        }
+    }
+
+    fclose(file);
+
+    return counter;
+}
 
 
 Node *create_node(double val) {
@@ -41,120 +60,15 @@ Node *push_to_stack(Node *head, double val) {
 }
 
 
-
-Node *find_penultimate(Node *head) {
-    Node *node_temp;
-    Node *node_last = head;
-
-    foreach(node_temp, head) {
-        if(node_temp->next == NULL) {
-            return node_last;
-        } 
-        node_last = node_temp;
-    }
-
-    return NULL;
-}
-
-
 Node *pop_from_stack(Node *head) {
     if(head->next == NULL) {
         printf("No elements to pop");
         return NULL;
     }
 
-    Node *penultimate = find_penultimate(head);
-    if(penultimate == NULL) return NULL;
-
-    Node *node_temp = penultimate->next;
-    penultimate->next = NULL;
-
-    return node_temp;
-}
-
-
-double apply_operator(Node *calc_stack, char operator) {
-    Node *node1 = pop_from_stack(calc_stack);
-    Node *node2 = pop_from_stack(calc_stack);
-
-    if(node1 == NULL || node2 == NULL) {
-        printf("Not enough data to finish operatin");
-        return 1;
-    }
-
-    double num1 = node1->val;
-    double num2 = node2->val;
-    double rez;
-
-    switch(operator) {
-        case '+':
-            rez = num1 + num2;
-            break;
-        case '-':
-            rez = num1 - num2;
-            break;
-        case '*':
-            rez = num1 * num2;
-            break;
-        case '/':
-            rez = num1 / num2;
-            break;
-    }
-
-    return rez;
-}
-
-
-Node *on_expr_read(Node *calc_stack, char *val) {
-    if(isalnum(val)) {
-        double num;
-        sscanf(val, "%lf", &num);
-        printf("\n %lf", num);
-    }
-    else {
-        double num = apply_operator(calc_stack, val[0]);
-        push_to_stack(calc_stack, num);
-    }
-
-    return calc_stack;
-}
-
-
-int count_lines(char filename[]) {
-    FILE *file = fopen(filename, "r");
-    char char_temp;
-    int counter = 0;
-
-    while(!feof(file)) {
-        char_temp = fgetc(file); 
-
-        if(char_temp == '\n') {
-            counter += 1;
-        }
-    }
-
-    fclose(file);
-
-    return counter;
-}
-
-
-double calculate_expression(char *filename, int lines, Node* (* on_read)(Node *calc_stack, char *val)) {
-    FILE *expr_file = fopen(filename, "r");
-    char val[20];
-    Node *calc_stack = create_node(0);
-    int i;
-
-    for(i=0; i<lines; i++) {
-        fscanf(expr_file, "%s", val);
-        printf("%s\n", val);
-        char *value = strdup(val);
-        on_expr_read(calc_stack, value);
-    }
-
-    fclose(expr_file);
-
-    return 123;
+    Node *removed = head->next;
+    head->next = removed->next;
+    return removed;
 }
 
 
@@ -162,15 +76,82 @@ int print_list(Node *head) {
     Node *node_temp;
 
     foreach(node_temp, head) {
-        printf("%fl\n", node_temp->val);
+        printf("%lf\n", node_temp->val);
     }
 
     return 0;
 }
 
 
+double apply_operator(double num1, double num2, char *operator) {
+    switch(operator[0]) {
+        case '+':
+            return num1 + num2;
+        case '-':
+            return num1 - num2;
+        case '*':
+            return num1 * num2;
+        case '/':
+            return num1 / num2;
+    }
+
+    return 0;
+}
+
+
+Node *on_read(Node *head, char *val) {
+    char *endptr;
+
+    double result = strtod(val, &endptr);
+    if(*endptr != '\0') {
+        printf("Ovo je string: %s\n", val);
+        double num1 = pop_from_stack(head)->val;
+        double num2 = pop_from_stack(head)->val;
+
+        push_to_stack(head, apply_operator(num2, num1, val));
+        printf("STACK:\n");
+        print_list(head);
+        printf("\n");
+    } else {
+        printf("Ovo je broj: %lf\n", result);
+        push_to_stack(head, result);
+
+        printf("STACK:\n");
+        print_list(head);
+        printf("\n");
+    }
+    
+    return head;
+}
+
+
+Node *read_expr(char *filename, int length) {
+    int i;
+    FILE *file = fopen(filename, "r");
+    char element[20];
+
+    Node *head = create_node(0);
+
+    for(i=0; i<length; i++) {
+        fscanf(file, "%s", element);
+        on_read(head, strdup(element));
+    }
+
+    return head;
+}
+
+
 int main() {
     int lines_count = count_lines("expression.txt");
-    calculate_expression("expression.txt", lines_count, on_expr_read);
+    printf("Lines count: %d \n", lines_count);
+
+    Node *stack = read_expr("expression.txt", lines_count);
+
+
+    printf("\n");
+    printf("Rezultat je:\n");
+    Node *poped = pop_from_stack(stack);
+    printf("%lf\n", poped->val);
+
     return 0;
 }
