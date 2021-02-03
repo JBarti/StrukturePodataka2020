@@ -64,8 +64,6 @@ Tree *build_expr_tree_util(Node *expr_stack, Tree *root) {
 
     char *val1 = pop_from_stack(expr_stack)->val; 
     char *val2 = pop_from_stack(expr_stack)->val; 
-    
-    printf("%s %s\n", val1, val2);
 
     if(val1 == NULL || val2 == NULL) {
         printf("Tree not balanced.\n");
@@ -89,40 +87,48 @@ Tree *build_expr_tree_util(Node *expr_stack, Tree *root) {
 
 Tree *build_expr_tree(char *expr) {
     Node *expr_stack = build_expr_stack(expr);
+    printf("STACK: \n");
     print_stack(expr_stack);
 
     char *root_val = pop_val_from_stack(expr_stack);
     Tree *root = create_leaf(root_val);
 
-    Tree *expr_tree = build_expr_tree_util(expr_stack, root);
+    build_expr_tree_util(expr_stack, root);
 
-    return NULL;
+    return root;
 }
 
 
 void print_expr(Tree *expr_tree) {
+    char *curr = expr_tree->val;
+
+    if(isnum(curr)){
+        printf("%s", curr);
+        return;
+    }
+
     if(expr_tree->ptr_right == NULL || expr_tree->ptr_left == NULL) {
         return;
     }    
 
-    printf("%s", expr_tree->val);
-
-    Tree *left = expr_tree->ptr_left;
-    Tree *right = expr_tree->ptr_right;
-
-    if(isnum(left->val)) {
-        printf("%s", left->val);
+    if(isnum(expr_tree->ptr_left->val)) {
+        printf("(");
+        print_expr(expr_tree->ptr_left);
+        printf("%s", curr);
     }
     else {
-        print_expr(left);
+        print_expr(expr_tree->ptr_left);
     }
 
-    if(isnum(right->val)) {
-        printf("%s", right->val);
+    if(isnum(expr_tree->ptr_right->val)) {
+        print_expr(expr_tree->ptr_right);
+        printf(")");
     }
     else {
-        print_expr(right);
+        print_expr(expr_tree->ptr_right);
     }
+
+
 }
 
 
@@ -131,7 +137,7 @@ int main() {
 
     Tree *expr_tree = build_expr_tree(expr);
 
-    printf("PRINTAJ\n");
+    printf("STABLO:\n");
     print_expr(expr_tree);
 
     return 1;
